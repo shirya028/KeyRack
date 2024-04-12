@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "801457142609",
+    "firebase_url": "https://key-rack-default-rtdb.firebaseio.com",
+    "project_id": "key-rack",
+    "storage_bucket": "key-rack.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801457142609:android:d1a68c3b3fff6e38093170",
+        "android_client_info": {
+          "package_name": "com.example.keyrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0sxh-mGIMQC4xBUS8T43Et8X4C79jZMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
