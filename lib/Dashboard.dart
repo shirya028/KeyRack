@@ -138,7 +138,7 @@ class _DashboardState extends State<Dashboard1> {
                   final SharedPreferences prefs = await SharedPreferences.getInstance();
                   await prefs.remove('userKey');
                   await FirebaseAuth.instance.signOut();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  Login()));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  Login()));
                 },
               ),
             ],

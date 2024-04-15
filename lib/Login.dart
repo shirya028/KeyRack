@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   margin: EdgeInsets.only(top: 20),
                   child: TextField(
                     controller: pass_controller,
+                      obscureText: true,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.password,color: Colors.greenAccent),
                         hintText: "Password",
