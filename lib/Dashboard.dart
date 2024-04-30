@@ -45,8 +45,7 @@ class Dashboard1 extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard1> {
   late List<String> list;
-  late Map<dynamic,dynamic> hm;
-  late Map<String,String> finalMap;
+  late Map<String,String> finalMap,finalMap2;
   TextEditingController site= TextEditingController();
   TextEditingController pass= TextEditingController();
   TextEditingController pass1= TextEditingController();
@@ -58,16 +57,13 @@ class _DashboardState extends State<Dashboard1> {
 
   _DashboardState() {
     list=[];
-    hm = {};
     finalMap={};
-    init();
+    finalMap2={};
   }
   GlobalKey<ScaffoldState> ListKey = GlobalKey<ScaffoldState>();
   FirebaseModel f1 = FirebaseModel();
 
-  void init() async {
-    hm = await f1.getDataMap();
-  }
+
 
   Widget build(BuildContext context) {
 
@@ -92,7 +88,7 @@ class _DashboardState extends State<Dashboard1> {
           ),
         drawer: Drawer(
           child: ListView(
-            // Important: Remove any padding from the ListView.
+
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
@@ -125,7 +121,7 @@ class _DashboardState extends State<Dashboard1> {
                   );
                   if (!await launcher.launchUrl(uri)) {
                     debugPrint(
-                        "Could not launch the uri"); // because the simulator doesn't has the email app
+                        "Could not launch the uri");
                   }
                 },
               ),
@@ -153,37 +149,38 @@ class _DashboardState extends State<Dashboard1> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
-              Map<String,String> data = snapshot.data ?? {};
+              Map<String,String> data_ = snapshot.data ?? {};
+              finalMap2=data_;
               if(flag==1) {
                 Map<String,String> temp={};
-                data.forEach((key, value) {
+                data_.forEach((key, value) {
                   if(key.toLowerCase().startsWith(searchPattern.toLowerCase())) {
                     temp[key]=value;
                   }
                 });
-                data=temp;
+                data_.clear();
+                data_=temp;
               }
-
-              if (data.isEmpty) {
+              if (data_.isEmpty) {
                 return Center(child: Text("No data available"));
               }
               else {
+                finalMap.clear();
+                list.clear();
                 return ListView.builder(
 
                   itemBuilder: (context, item) {
-                    String key = data.keys.elementAt(item) ;
-                    String value = data.values.elementAt(item);
 
+                    String key = data_.keys.elementAt(item) ;
+                    String value = data_.values.elementAt(item);
                     finalMap[key] = value;
                     list.add(key);
-
                     return Container(
                       height: 120,
                       margin: EdgeInsets.all(10),
                       child: Card(
                         elevation: 6,
                         color: Colors.white70,
-      
                         child: ListTile(
                           title: Text(key, style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
                           subtitle: const Text("Click to open", style: TextStyle(fontSize: 10, color: Colors.grey)),
@@ -194,14 +191,14 @@ class _DashboardState extends State<Dashboard1> {
                             icon: const Icon(Icons.delete_forever),
                           ),
                           onTap: () {
-                              pass1.text=finalMap[list[item]]!;
-                              displayDialog(list[item],finalMap[list[item]]!);
+                              pass1.text = finalMap[list[item]]!;
+                              displayDialog(list[item], finalMap[list[item]]!);
                           },
                         ),
                       ),
                     );
                   },
-                  itemCount: data.length,
+                  itemCount: data_.length,
                 );
               }
             }
@@ -335,16 +332,16 @@ class _DashboardState extends State<Dashboard1> {
                             Fluttertoast.showToast(msg: "Enter data");
                             return;
                           }
-
-                          finalMap[site.text]=pass.text;
+                          finalMap.addAll(finalMap2);
+                          setState(() {
+                          });
+                          finalMap[site.text.toString().trim()]=pass.text.toString().trim();
                            f1.addDataMap(finalMap);
                            site.text="";
                            pass.text="";
                            Fluttertoast.showToast(msg: "Data Added");
                            Navigator.pop(context);
-
                           setState(() {
-
                           });
                         },
                             child: Text("Save")),
