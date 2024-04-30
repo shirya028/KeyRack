@@ -291,7 +291,6 @@ class _SignUp1State extends State<SignUp1> {
             msg: "Error during signup: $e",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER);
-
       }
     }
   }
