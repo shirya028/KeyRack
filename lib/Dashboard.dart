@@ -234,8 +234,10 @@ class _DashboardState extends State<Dashboard1> {
               ElevatedButton(onPressed: () {
                 if(searchTxt.text.length>0)
                 {
+
                    finalMap.addAll(finalMap2 );
                    finalMap.remove(key);
+                   finalMap2.remove(key);
                    f1.addDataMap(finalMap);
                 }
                 else {
