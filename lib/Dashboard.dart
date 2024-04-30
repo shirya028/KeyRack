@@ -150,7 +150,7 @@ class _DashboardState extends State<Dashboard1> {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
               Map<String,String> data_ = snapshot.data ?? {};
-              finalMap2=data_;
+              finalMap2.addAll(data_);
               if(flag==1) {
                 Map<String,String> temp={};
                 data_.forEach((key, value) {
@@ -216,6 +216,8 @@ class _DashboardState extends State<Dashboard1> {
   }
 
   showDeleteDialog(String key) {
+    Fluttertoast.showToast(msg: key);
+
     return showDialog(
         context: context,
         builder: (context)=>AlertDialog(
@@ -231,11 +233,18 @@ class _DashboardState extends State<Dashboard1> {
             children: [
               ElevatedButton(onPressed: () { Navigator.pop(context); }, child: Text("Cancel")),
               ElevatedButton(onPressed: () {
-                finalMap.remove(key);
-                f1.addDataMap(finalMap);
+                if(searchTxt.text.length>0)
+                {
+                   finalMap.addAll(finalMap2 );
+                   finalMap.remove(key);
+                   f1.addDataMap(finalMap);
+                }
+                else {
+                  finalMap.remove(key);
+                  f1.addDataMap(finalMap);
+                }
                 Navigator.pop(context);
-                setState(() {
-                });
+                setState(() {});
               }, child: Text("delete"),style: ElevatedButton.styleFrom(backgroundColor: Colors.red)),
 
             ],
