@@ -237,13 +237,13 @@ class _DashboardState extends State<Dashboard1> {
 
                    finalMap.addAll(finalMap2 );
                    finalMap.remove(key);
-                   finalMap2.remove(key);
                    f1.addDataMap(finalMap);
                 }
                 else {
                   finalMap.remove(key);
                   f1.addDataMap(finalMap);
                 }
+                finalMap2.remove(key);
                 Navigator.pop(context);
                 setState(() {});
               }, child: Text("delete"),style: ElevatedButton.styleFrom(backgroundColor: Colors.red)),
