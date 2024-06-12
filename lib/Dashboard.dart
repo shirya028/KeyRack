@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:keyrack/Firebase_Model.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'Login.dart';
 import 'firebase_options.dart';
-//hello
+
 class Dashboard extends StatelessWidget {
 
   Dashboard() {
@@ -52,8 +53,7 @@ class _DashboardState extends State<Dashboard1> {
   int flag=0,cnt=0;
   String searchPattern="";
   bool isObscure=true;
-
-
+  final LocalAuthentication auth=LocalAuthentication();
   _DashboardState() {
     list=[];
     finalMap={};
@@ -365,58 +365,79 @@ class _DashboardState extends State<Dashboard1> {
    );
   }
 
-    displayDialog(String key,String val) {
+    displayDialog(String key,String val) async {
+      bool didAuthenticate=false;
+      try {
+        final bool canAuthenticateWithBioMetrics = await auth.canCheckBiometrics;
+        if (canAuthenticateWithBioMetrics) {
+            didAuthenticate = await auth.authenticate(
+              localizedReason: "Please Authenticate",
+              options: const AuthenticationOptions(
+                  biometricOnly: false
+              ));
+        }
+      }
+      catch(e) {
+        Fluttertoast.showToast(msg: e.toString());
+      }
+
+    if(didAuthenticate) {
       return showDialog(
           context: context,
           builder: (context)=>AlertDialog(
-          content: SingleChildScrollView(
-          child: Container(
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                  children:
-                  [
-                    GestureDetector(
-                      onTap: () {Navigator.pop(context); },
-                      child: Icon(Icons.cancel),
-                    ),
-                  ]
-                  ),
-            Text(key,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child:
-                    TextField(
-                        controller: pass1,
-                        style: TextStyle(color: Colors.black),
-                        enabled: false,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.key,color: Colors.greenAccent),
-                          disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: const BorderSide(color: Colors.black),
+              content: SingleChildScrollView(
+                  child: Container(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children:
+                                [
+                                  GestureDetector(
+                                    onTap: () {Navigator.pop(context); },
+                                    child: Icon(Icons.cancel),
+                                  ),
+                                ]
+                            ),
+                            Text(key,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 180,
+                                  child:
+                                  TextField(
+                                      controller: pass1,
+                                      style: TextStyle(color: Colors.black),
+                                      enabled: false,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(Icons.key,color: Colors.greenAccent),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(15),
+                                          borderSide: const BorderSide(color: Colors.black),
 
-                          ),
+                                        ),
 
-                        )),
-                    ),
-                  IconButton(onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: pass1.text));
-                    Fluttertoast.showToast(msg: "Copied");
-                  }, icon: Icon(Icons.copy))
-                ],
-              ),
-              ]
+                                      )),
+                                ),
+                                IconButton(onPressed: () async {
+                                  await Clipboard.setData(ClipboardData(text: pass1.text));
+                                  Fluttertoast.showToast(msg: "Copied");
+                                }, icon: Icon(Icons.copy))
+                              ],
+                            ),
+                          ]
 
+                      )
+                  )
+              )
           )
-        )
-      )
-      )
       );
+    }
+    else {
+      Fluttertoast.showToast(msg: "Please Authenticate yourself for the password");
+    }
+
     }
 
     searchBar() {
